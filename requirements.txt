@@ -1,0 +1,11 @@
+jupyterlab>=4.2
+nbclient>=0.10
+nbformat>=5.10
+ipykernel>=6.29
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
+seaborn>=0.13
+requests>=2.32
+yfinance>=0.2.54
+torch>=2.2

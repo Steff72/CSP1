@@ -1,0 +1,12 @@
+.DS_Store
+.venv/
+.ipynb_checkpoints/
+__pycache__/
+*.py[cod]
+
+# Downloaded and generated datasets
+data/raw/
+data/processed/
+
+# Local notebook exports
+*.html
