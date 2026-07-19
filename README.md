@@ -11,7 +11,8 @@ Der aktuelle Stand enthält den ersten Notebook-Teil:
 3. zeitliche Ausrichtung ohne Look-ahead Leakage,
 4. Konstruktion der 1- und 7-Tage-Zielvariablen,
 5. Feature Engineering,
-6. erste explorative Datenanalyse.
+6. explorative Datenanalyse ohne den finalen Holdout,
+7. geprüfte Übergabe an purged Walk-forward-Folds.
 
 ## Projektstruktur
 
@@ -40,7 +41,9 @@ jupyter lab
 
 Beim ersten Durchlauf lädt das Notebook Daten aus dem Internet. Danach werden
 die Rohdaten lokal unter `data/raw/` zwischengespeichert. Dieser Ordner wird
-nicht versioniert.
+nicht versioniert. Das Notebook verwendet einen festen exklusiven UTC-Stichtag
+und lädt nur vollständig abgeschlossene Bitcoin-Tageskerzen. Daten ab 2025
+bleiben bis zur finalen Modellevaluation als Holdout unberührt.
 
 ## Datenquellen
 

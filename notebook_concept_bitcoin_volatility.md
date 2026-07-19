@@ -12,6 +12,7 @@ The project does not try to predict Bitcoin prices or prove a trading strategy. 
 - Primary target: 7-day future realized volatility.
 - Secondary target: 1-day future realized volatility, if time permits.
 - Frequency: daily.
+- Forecast origin: immediately after a completed Bitcoin UTC daily candle.
 - Main comparison: simple baselines vs. GARCH vs. XGBoost vs. Chronos-2.
 
 ## 2. Data Scope
@@ -24,6 +25,9 @@ The project does not try to predict Bitcoin prices or prove a trading strategy. 
 - Nasdaq index as risk-asset proxy.
 
 Reason for the selected scope: the chosen data sources cover Bitcoin market history, sentiment, equity-market volatility, USD strength and broader risk-asset behavior while keeping the dataset reproducible and manageable.
+
+Only fully completed UTC daily candles are used. The notebook exposes a fixed,
+exclusive data end date so that reruns use the same historical sample.
 
 ## 3. Dataset Design
 
@@ -95,6 +99,9 @@ The project should explicitly enforce these rules:
 - Rolling features must be calculated backward-looking only.
 - External variables must be shifted by at least one day if publication timing is unclear.
 - Scaling, imputation and feature selection must be fitted inside each training fold only.
+- The final holdout must not be used for EDA, feature selection or hyperparameter tuning.
+- Training rows whose target window reaches a validation or holdout period must be purged.
+- Source data must pass uniqueness, chronology, missingness and domain checks before features are calculated.
 
 ## 6. Feature Sets for Experiments
 
@@ -120,10 +127,12 @@ Adds:
 Purpose: test whether broader market conditions help.
 
 Adds:
-- VIX
-- DXY
-- Nasdaq
+- VIX level
 - returns/changes of VIX, DXY and Nasdaq
+
+Raw DXY and Nasdaq levels are excluded from the main feature set because they
+contain strong long-term trends. They may be tested only as a documented
+ablation experiment.
 
 ### Feature set D: combined
 Purpose: final feature set for XGBoost and optional covariate-aware Chronos-2 setup.
@@ -131,9 +140,9 @@ Purpose: final feature set for XGBoost and optional covariate-aware Chronos-2 se
 Includes:
 - BTC features
 - Fear & Greed
-- VIX
-- DXY
-- Nasdaq
+- VIX level and changes
+- DXY returns and changes
+- Nasdaq returns and changes
 
 ## 7. Exploratory Data Analysis
 
@@ -168,13 +177,25 @@ Fold 1: train 2018-2020, validate 2021
 Fold 2: train 2018-2021, validate 2022
 Fold 3: train 2018-2022, validate 2023
 Fold 4: train 2018-2023, validate 2024
-Final holdout: most recent available period
+Final holdout: 2025 onward
 ```
 
 Adjust dates based on available data at implementation time.
 
-### Alternative for more observations
-Use rolling forecast origins:
+### Purge target overlap
+For a validation period beginning at date \(v\), exclude every training origin
+\(t\) whose target window reaches \(v\):
+
+$$
+t + h \geq v
+$$
+
+This prevents training labels from containing returns that belong to the
+validation or holdout period.
+
+### Forecast origins
+Use all eligible daily rows for fitting the supervised models, but evaluate
+only every seventh forecast origin:
 
 ```text
 Train up to t, predict t+1 ... t+7
@@ -182,8 +203,12 @@ Move t forward by 7 days
 Repeat
 ```
 
+This produces non-overlapping evaluation targets, makes error comparisons
+easier to interpret and reduces the runtime of GARCH and Chronos-2.
+
 ### Recommendation
-Use expanding-window walk-forward backtesting first. It is easy to explain and fits the challenge. Add rolling-window backtesting only if time allows.
+Use purged expanding-window walk-forward backtesting with annual validation
+folds, seven-day-spaced evaluation origins and one untouched final holdout.
 
 ## 9. Model Plan
 
@@ -254,7 +279,19 @@ Purpose:
 - Can be compared against classical and ML baselines.
 
 Implementation idea:
-- Start with BTC volatility as a univariate forecasting task.
+- Use the observed backward-looking `rv_7` series up to forecast origin \(t\)
+  as the univariate context.
+- Ask Chronos-2 for a seven-step forecast and use forecast step 7 as the
+  prediction for `target_rv_7`:
+
+$$
+\widehat{\mathrm{target\_rv7}}_t
+=
+\widehat{\mathrm{rv7}}_{t+7}
+$$
+
+- Never use the forward-looking `target_rv_7` series as context because its
+  current value is only known seven days later.
 - If feasible, add external covariates in a second experiment.
 - Evaluate point forecasts and, if available, probabilistic forecasts.
 
@@ -410,6 +447,8 @@ For all sections below, use the recurring sequence **Erklärung → Code/Output 
 - DXY
 - Nasdaq
 - source, date range and row-count table
+- fixed exclusive UTC data end date
+- completed-candle and source-domain checks
 
 ### 3. Data cleaning and alignment
 - date parsing
@@ -446,6 +485,9 @@ For all sections below, use the recurring sequence **Erklärung → Code/Output 
 - fold generation
 - metric functions
 - leakage-safe preprocessing
+- purge training labels that overlap validation
+- evaluate at seven-day-spaced forecast origins
+- keep the 2025+ holdout untouched until final evaluation
 - visual or tabular fold overview
 - explain expanding-window validation and all metrics with LaTeX
 
@@ -515,6 +557,18 @@ Then add Fear & Greed, VIX, DXY and Nasdaq as the first extension.
 
 ### Risk: data alignment leakage
 Mitigation: shift external variables by one day when publication timing is unclear.
+
+### Risk: incomplete current-day candle
+Mitigation: use a fixed exclusive UTC end date and validate OHLC consistency
+before calculating returns.
+
+### Risk: target overlap across folds
+Mitigation: purge training rows whose seven-day target reaches validation and
+evaluate on non-overlapping seven-day-spaced forecast origins.
+
+### Risk: holdout contamination
+Mitigation: restrict EDA, feature selection and tuning to data before 2025 and
+evaluate the 2025+ holdout once at the end.
 
 ### Risk: too many feature variants
 Mitigation: use the four predefined feature sets only.
