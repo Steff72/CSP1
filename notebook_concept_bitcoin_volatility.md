@@ -300,8 +300,9 @@ $$
 ### Main metrics
 - MAE
 - RMSE
+- QLIKE
 
-Define both metrics in the notebook:
+Define all three metrics in the notebook:
 
 $$
 \mathrm{MAE} =
@@ -311,6 +312,18 @@ $$
 $$
 \mathrm{RMSE} =
 \sqrt{\frac{1}{n}\sum_{i=1}^{n}\left(y_i-\hat{y}_i\right)^2}
+$$
+
+For realized and predicted volatility, use normalized QLIKE:
+
+$$
+\mathrm{QLIKE} =
+\frac{1}{n}\sum_{i=1}^{n}
+\left(
+\frac{y_i^2}{\hat{y}_i^2}
+- \log\left(\frac{y_i^2}{\hat{y}_i^2}\right)
+- 1
+\right)
 $$
 
 ### Relative metric
@@ -343,6 +356,7 @@ Columns:
 - horizon
 - MAE
 - RMSE
+- QLIKE
 - relative improvement vs. naive
 - notes
 
@@ -354,6 +368,7 @@ Columns:
 - model
 - MAE
 - RMSE
+- QLIKE
 
 ### Feature-set comparison for XGBoost
 Rows:
@@ -375,6 +390,10 @@ The notebook should answer:
 ## 13. Notebook Style and Implementation Rules
 
 ### Keep the notebook simple
+- Keep the complete project in one notebook:
+  `notebooks/bitcoin_volatility_forecasting.ipynb`.
+- Extend this notebook section by section instead of creating separate
+  notebooks for data preparation, modeling or evaluation.
 - Use the smallest implementation that answers the research question.
 - Prefer explicit, readable steps over abstractions and large helper frameworks.
 - Keep configuration values such as dates, forecast horizon, random seed and paths in one visible setup cell.
@@ -491,26 +510,25 @@ For all sections below, use the recurring sequence **Erklärung → Code/Output 
 - visual or tabular fold overview
 - explain expanding-window validation and all metrics with LaTeX
 
-### 8. Baseline models
+### 8. Baseline models and GARCH
+- explain MAE, RMSE and QLIKE with LaTeX
+- include small deterministic metric-function checks
 - naive persistence
-- window average
+- 30-day rolling volatility average
+- GARCH(1,1), refitted at every seven-day-spaced evaluation origin
+- aggregate the seven daily variance forecasts to the non-annualized
+  seven-day realized-volatility target
 - prediction table or plot
 - interpretation against the minimum benchmark
 
-### 9. Classical model
-- GARCH
-- explain the GARCH(1,1) equation and parameters
-- diagnostics and forecast plot
-- interpret convergence, persistence and forecast quality
-
-### 10. Machine-learning model
+### 9. Machine-learning model
 - XGBoost
 - feature-set comparison
 - feature importance
 - keep tuning deliberately small
 - interpret both forecast performance and feature importance cautiously
 
-### 11. Foundation model
+### 10. Foundation model
 - Chronos-2
 - zero-shot forecast
 - optional covariate experiment

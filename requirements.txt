@@ -9,3 +9,4 @@ seaborn==0.13.2
 requests==2.34.2
 yfinance==1.5.1
 torch==2.13.0
+arch==8.0.0

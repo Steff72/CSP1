@@ -4,7 +4,7 @@ Wir untersuchen, ob sich die zukünftige realisierte Bitcoin-Volatilität mit
 einfachen Baselines, GARCH, XGBoost und Chronos-2 prognostizieren lässt. Als
 externe Signale verwenden wir den Fear & Greed Index, VIX, DXY und Nasdaq.
 
-Der aktuelle Stand enthält den ersten Notebook-Teil:
+Der aktuelle Stand enthält im zentralen Notebook:
 
 1. reproduzierbares Setup mit Apple-Silicon-/MPS-Erkennung,
 2. Download und lokales Caching der Zeitreihen,
@@ -12,20 +12,23 @@ Der aktuelle Stand enthält den ersten Notebook-Teil:
 4. Konstruktion der 1- und 7-Tage-Zielvariablen,
 5. Feature Engineering,
 6. explorative Datenanalyse ohne den finalen Holdout,
-7. geprüfte Übergabe an purged Walk-forward-Folds.
+7. purged Walk-forward-Validierung,
+8. naive Baselines und GARCH(1,1),
+9. einen gemeinsamen Vergleich mit MAE, RMSE und QLIKE.
 
 ## Projektstruktur
 
 ```text
 .
 ├── notebooks/
-│   └── 01_data_preparation_and_eda.ipynb
+│   └── bitcoin_volatility_forecasting.ipynb
 ├── notebook_concept_bitcoin_volatility.md
 ├── requirements.txt
 └── README.md
 ```
 
-Die Kerndefinitionen und Berechnungen bleiben direkt im Notebook sichtbar.
+Alle Projektabschnitte bleiben in diesem einen Notebook. Die Kerndefinitionen
+und Berechnungen sind dort direkt sichtbar.
 Eine `helpers.py` wird erst ergänzt, wenn eine kleine technische Hilfsfunktion
 tatsächlich mehrfach benötigt wird.
 
