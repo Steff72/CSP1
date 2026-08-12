@@ -266,9 +266,17 @@ Purpose:
 - Provides feature importance for interpretation.
 
 Implementation idea:
-- Prepare one row per forecast origin.
-- Use feature sets A-D.
-- Tune a small hyperparameter grid inside walk-forward validation.
+- Refit at every seven-day-spaced forecast origin using only labels whose
+  complete target window ends before that origin.
+- Compare the predefined feature sets A-D with one fixed, conservative
+  hyperparameter configuration.
+- Model the logarithm of realized volatility and transform forecasts back to
+  guarantee positive predictions.
+- Average gain importance across the combined walk-forward models; interpret
+  it as model usage, not causality.
+- Add a small hyperparameter search only if the fixed configuration exposes a
+  clear underfitting problem. Any tuning must remain inside the development
+  period.
 
 ### Model 4: Chronos-2
 Use Chronos-2 as the advanced time-series foundation model.
@@ -524,8 +532,9 @@ For all sections below, use the recurring sequence **Erklärung → Code/Output 
 ### 9. Machine-learning model
 - XGBoost
 - feature-set comparison
-- feature importance
-- keep tuning deliberately small
+- refit at each evaluation origin using only fully observed labels
+- fixed conservative parameters before considering any tuning
+- average gain importance across combined walk-forward models
 - interpret both forecast performance and feature importance cautiously
 
 ### 10. Foundation model

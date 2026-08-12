@@ -14,7 +14,8 @@ Der aktuelle Stand enthält im zentralen Notebook:
 6. explorative Datenanalyse ohne den finalen Holdout,
 7. purged Walk-forward-Validierung,
 8. naive Baselines und GARCH(1,1),
-9. einen gemeinsamen Vergleich mit MAE, RMSE und QLIKE.
+9. XGBoost mit vier Feature-Sets,
+10. einen gemeinsamen Vergleich mit MAE, RMSE und QLIKE.
 
 ## Projektstruktur
 
@@ -38,6 +39,8 @@ tatsächlich mehrfach benötigt wird.
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
+# XGBoost benötigt auf macOS die OpenMP-Laufzeit
+brew install libomp
 python -m pip install -r requirements.txt
 jupyter lab
 ```
