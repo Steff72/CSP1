@@ -9,7 +9,7 @@ Der aktuelle Stand enthält im zentralen Notebook:
 1. reproduzierbares Setup mit Apple-Silicon-/MPS-Erkennung,
 2. Download und lokales Caching der Zeitreihen,
 3. zeitliche Ausrichtung ohne Look-ahead Leakage,
-4. Konstruktion der 1- und 7-Tage-Zielvariablen,
+4. Konstruktion der zukünftigen 7-Tage-Zielvariable,
 5. Feature Engineering,
 6. explorative Datenanalyse ohne den finalen Holdout,
 7. purged Walk-forward-Validierung,

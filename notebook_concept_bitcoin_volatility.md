@@ -10,7 +10,6 @@ The project does not try to predict Bitcoin prices or prove a trading strategy. 
 
 ### Forecasting task
 - Primary target: 7-day future realized volatility.
-- Secondary target: 1-day future realized volatility, if time permits.
 - Frequency: daily.
 - Forecast origin: immediately after a completed Bitcoin UTC daily candle.
 - Main comparison: simple baselines vs. GARCH vs. XGBoost vs. Chronos-2.
@@ -72,23 +71,25 @@ $$
 where \(P_t\) is the Bitcoin closing price on day \(t\).
 
 ### Future realized volatility
-For forecast horizon `h`:
+For the seven-day forecast horizon:
 
 $$
-\mathrm{RV}_{t,h} =
-\sqrt{\sum_{i=1}^{h} r_{t+i}^{2}}
+\mathrm{RV}_{t,7} =
+\sqrt{\sum_{i=1}^{7} r_{t+i}^{2}}
 $$
 
 Optional annualized version:
 
 $$
-\mathrm{RV}^{\mathrm{annualized}}_{t,h}
+\mathrm{RV}^{\mathrm{annualized}}_{t,7}
 =
-\mathrm{RV}_{t,h}\sqrt{\frac{365}{h}}
+\mathrm{RV}_{t,7}\sqrt{\frac{365}{7}}
 $$
 
-### Recommended target
-Use non-annualized `target_rv_7` as the main target in the notebook. Annualized volatility can be shown in plots for interpretability, but the model comparison should use one consistent target.
+### Target used in the project
+Use non-annualized `target_rv_7` as the sole forecasting target in the
+notebook. Annualized volatility can be shown in plots for interpretability,
+but the model comparison uses the same non-annualized target throughout.
 
 ## 5. Leakage Rules
 
@@ -160,7 +161,7 @@ The EDA should answer practical modeling questions, not just show charts.
 ### EDA questions
 - Is volatility clustered?
 - Are there clear regime changes?
-- Does 7-day volatility look more stable than 1-day volatility?
+- How strongly is the 7-day target right-skewed and regime-dependent?
 - Do Fear & Greed, VIX, DXY or Nasdaq visibly move with BTC volatility?
 - Are there missing-data periods or alignment problems?
 
@@ -487,7 +488,6 @@ For all sections below, use the recurring sequence **Erklärung → Code/Output 
 
 ### 4. Target construction
 - log returns
-- 1-day realized volatility
 - 7-day realized volatility
 - target shifting
 - LaTeX definitions before the code
