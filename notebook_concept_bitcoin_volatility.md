@@ -290,6 +290,9 @@ Purpose:
 Implementation idea:
 - Use the observed backward-looking `rv_7` series up to forecast origin \(t\)
   as the univariate context.
+- Use the most recent 512 daily context values for every origin and keep
+  `cross_learning=False`, so every forecast remains an independent univariate
+  zero-shot prediction.
 - Ask Chronos-2 for a seven-step forecast and use forecast step 7 as the
   prediction for `target_rv_7`:
 
@@ -301,8 +304,11 @@ $$
 
 - Never use the forward-looking `target_rv_7` series as context because its
   current value is only known seven days later.
-- If feasible, add external covariates in a second experiment.
-- Evaluate point forecasts and, if available, probabilistic forecasts.
+- Use the median as point forecast and the 10%/90% quantiles as an 80%
+  prediction interval.
+- Evaluate point forecasts, pinball loss and empirical interval coverage.
+- Keep a covariate-aware Chronos-2 experiment optional; the primary comparison
+  remains simple and univariate.
 
 ## 10. Metrics
 

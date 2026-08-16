@@ -15,7 +15,8 @@ Der aktuelle Stand enthält im zentralen Notebook:
 7. purged Walk-forward-Validierung,
 8. naive Baselines und GARCH(1,1),
 9. XGBoost mit vier Feature-Sets,
-10. einen gemeinsamen Vergleich mit MAE, RMSE und QLIKE.
+10. Chronos-2 als univariate Zero-Shot-Foundation-Model-Methode,
+11. einen gemeinsamen Vergleich mit Punkt-, Quantil- und Unsicherheitsmetriken.
 
 ## Projektstruktur
 
@@ -50,6 +51,10 @@ die Rohdaten lokal unter `data/raw/` zwischengespeichert. Dieser Ordner wird
 nicht versioniert. Das Notebook verwendet einen festen exklusiven UTC-Stichtag
 und lädt nur vollständig abgeschlossene Bitcoin-Tageskerzen. Daten ab 2025
 bleiben bis zur finalen Modellevaluation als Holdout unberührt.
+
+Chronos-2 wird beim ersten Einsatz von Hugging Face geladen und danach im
+lokalen Modell-Cache wiederverwendet. Die Inferenz nutzt auf Apple Silicon MPS,
+wenn die installierte PyTorch-Version dies unterstützt, sonst automatisch CPU.
 
 ## Datenquellen
 
