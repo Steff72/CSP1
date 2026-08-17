@@ -37,8 +37,9 @@ Der Informationsstand endet am Sonntag um 23:59 Uhr in der Zeitzone
 `America/New_York`. Alle Zeitstempel werden technisch in UTC gespeichert, aber
 für die Bildung des Wochenendfensters in New Yorker Zeit interpretiert.
 Bei stündlichen Bitcoin-Daten ist die letzte vollständig abgeschlossene Kerze
-zu diesem Zeitpunkt die Kerze mit Schlusszeit Sonntag 23:00 Uhr. Wir verwenden
-keine teilweise laufende Stundenkerze.
+zu diesem Zeitpunkt die Kerze mit Öffnungszeit Sonntag 23:00 Uhr und Schluss
+unmittelbar vor Montag 00:00 Uhr. Wir verwenden keine teilweise laufende
+Stundenkerze.
 
 Wir verwenden nur reguläre Wochenenden, auf die ein Handelstag am Montag folgt.
 Wochenenden vor einem Feiertagsmontag werden ausgeschlossen. So besitzen alle
