@@ -13,3 +13,4 @@ chronos-forecasting==2.3.1
 arch==8.0.0
 xgboost==3.2.0
 scikit-learn==1.9.0
+statsmodels==0.14.6
