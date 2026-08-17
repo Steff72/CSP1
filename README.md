@@ -9,7 +9,7 @@ Das aktualisierte methodische Konzept ist in
 `notebook_concept_btc_weekend_qqq.md` dokumentiert. Das neue zentrale Notebook
 `notebooks/btc_weekend_qqq_forecasting.ipynb` enthält bereits Setup,
 Datenbezug, Leakage-sichere Ziel- und Feature-Konstruktion, die erste EDA sowie
-Expanding-window-Backtesting mit zwei einfachen Baselines und SARIMAX.
+Expanding-window-Backtesting mit zwei einfachen Baselines, SARIMAX und XGBoost.
 Das bestehende Volatilitäts-Notebook bleibt als bisheriger Projektstand
 unverändert erhalten.
 
