@@ -15,8 +15,9 @@ Das methodische Konzept steht in
 `notebooks/btc_overnight_qqq_forecasting.ipynb` enthält derzeit Setup,
 reproduzierbare Datenbeschaffung, zeitliche Ausrichtung, Leakage-Prüfungen und
 explorative Datenanalyse sowie die Expanding-window-Folds 2021-2025 und die
-historische Mehrheitsbaseline. Die weiteren Modelle werden im selben Notebook
-ergänzt.
+historische Mehrheitsbaseline. Die logistische Regression ist als täglicher
+Walk-forward-Vergleich ohne und mit Bitcoin umgesetzt. Die weiteren Modelle
+werden im selben Notebook ergänzt.
 
 Vorgesehen sind:
 
