@@ -1,48 +1,47 @@
-# CSP1: Bitcoin Weekend Signals for QQQ Opening Gaps
+# CSP1: Bitcoin Overnight Signals for QQQ Opening Gaps
 
-Wir untersuchen, ob Bitcoin-Bewegungen während des Wochenendes zusammen mit
-Sentiment- und Makroindikatoren den Eröffnungsgap von QQQ am folgenden Montag
-prognostizieren können. Verglichen werden einfache Baselines, SARIMAX, XGBoost
-und Chronos-2.
+Wir untersuchen, ob Bitcoin-Aktivität ausserhalb der regulären US-Handelszeit
+zusammen mit Sentiment- und Makroindikatoren die Richtung des nächsten
+QQQ-Eröffnungsgaps prognostizieren kann.
 
-Das aktualisierte methodische Konzept ist in
-`notebook_concept_btc_weekend_qqq.md` dokumentiert. Das neue zentrale Notebook
-`notebooks/btc_weekend_qqq_forecasting.ipynb` enthält bereits Setup,
-Datenbezug, Leakage-sichere Ziel- und Feature-Konstruktion, die erste EDA sowie
-Expanding-window-Backtesting mit zwei einfachen Baselines, SARIMAX und XGBoost.
-Das bestehende Volatilitäts-Notebook bleibt als bisheriger Projektstand
-unverändert erhalten.
+Eine Beobachtung entspricht einem QQQ-Handelstag. Das Bitcoin-Fenster beginnt
+mit dem Ende der vorherigen regulären Nasdaq-Sitzung und endet um 09:00 Uhr
+New Yorker Zeit, 30 Minuten vor der nächsten regulären Eröffnung. Das
+numerische Gap wird als logarithmische Rendite vom vorherigen QQQ-Schluss bis
+zum nächsten QQQ-Open berechnet; die primäre Zielvariable ist sein Vorzeichen.
 
-Für das zentrale Notebook ist insgesamt vorgesehen:
+Das methodische Konzept steht in
+`notebook_concept_btc_overnight_qqq.md`. Das zentrale Notebook
+`notebooks/btc_overnight_qqq_forecasting.ipynb` enthält derzeit Setup,
+reproduzierbare Datenbeschaffung, zeitliche Ausrichtung, Leakage-Prüfungen und
+explorative Datenanalyse sowie die Expanding-window-Folds 2021-2025 und die
+historische Mehrheitsbaseline. Die weiteren Modelle werden im selben Notebook
+ergänzt.
 
-1. reproduzierbares Setup mit Apple-Silicon-/MPS-Erkennung,
-2. stündliche Bitcoin-Daten sowie QQQ-, Fear-&-Greed-, VIX- und DXY-Daten,
-3. zeitliche Ausrichtung auf das Wochenende ohne Look-ahead Leakage,
-4. Konstruktion des QQQ-Eröffnungsgaps,
-5. kompakte Bitcoin-, Sentiment- und Makrofeatures,
-6. explorative Datenanalyse ohne den finalen Holdout,
-7. Expanding-window Walk-forward-Validierung,
-8. einfache Baselines und SARIMAX,
-9. XGBoost mit und ohne Bitcoin-Wochenendfeatures,
-10. Chronos-2 als Zero-Shot-Foundation-Model-Methode,
-11. einen gemeinsamen Vergleich mit MAE und Richtungsgenauigkeit.
+Vorgesehen sind:
+
+1. eine historische Mehrheitsklasse als naive Baseline,
+2. logistische Regression als einfache statistische Methode,
+3. XGBoost als klassisches nichtlineares Machine-Learning-Modell,
+4. Chronos-2 als vortrainiertes Time-Series Foundation Model,
+5. Expanding-window-Validierung 2021-2025 und ein unberührter Holdout ab 2026,
+6. ein direkter Vergleich der Feature-Sets ohne und mit Bitcoin.
 
 ## Projektstruktur
 
 ```text
 .
 ├── notebooks/
-│   ├── btc_weekend_qqq_forecasting.ipynb
-│   └── bitcoin_volatility_forecasting.ipynb  # bisheriger Projektstand
-├── notebook_concept_btc_weekend_qqq.md
+│   └── btc_overnight_qqq_forecasting.ipynb
+├── notebook_concept_btc_overnight_qqq.md
+├── Time_Series_Challenge_Proposal_Balz_Binkert_simplified.docx
 ├── requirements.txt
 └── README.md
 ```
 
-Nach der Umstellung bleiben alle Projektabschnitte in einem Notebook. Die
-Kerndefinitionen und Berechnungen sind dort direkt sichtbar.
-Eine `helpers.py` wird erst ergänzt, wenn eine kleine technische Hilfsfunktion
-tatsächlich mehrfach benötigt wird.
+Alle inhaltlichen Schritte bleiben im Notebook nachvollziehbar. Eine
+`helpers.py` wird nur eingeführt, falls eine kleine technische Hilfsfunktion
+später tatsächlich mehrfach benötigt wird.
 
 ## Lokales Setup
 
@@ -56,22 +55,23 @@ python -m pip install -r requirements.txt
 jupyter lab
 ```
 
-Beim ersten Durchlauf lädt das Notebook Daten aus dem Internet. Danach werden
-die Rohdaten lokal unter `data/raw/` zwischengespeichert. Dieser Ordner wird
-nicht versioniert. Daten ab 2025 bleiben bis zur finalen Modellevaluation als
-Holdout unberührt.
+Beim ersten Durchlauf lädt das Notebook die Daten und legt lokale Caches unter
+`data/raw/` an. Diese Dateien werden nicht versioniert. Daten ab 2026 bleiben
+bis zur finalen Modellevaluation als Holdout unberührt.
 
 Chronos-2 wird beim ersten Einsatz von Hugging Face geladen und danach im
 lokalen Modell-Cache wiederverwendet. Die Inferenz nutzt auf Apple Silicon MPS,
-wenn die installierte PyTorch-Version dies unterstützt, sonst automatisch CPU.
+wenn die installierte PyTorch-Version dies unterstützt, sonst CPU.
 
 ## Datenquellen
 
-- [Öffentliches Binance-Archiv](https://data.binance.vision/)
-  für stündliche Bitcoin-OHLCV-Daten
-- [Yahoo Finance über yfinance](https://ranaroussi.github.io/yfinance/)
-  für QQQ, VIX und DXY
+- [Binance Public Data](https://data.binance.vision/) für stündliche
+  `BTCUSDT`-OHLCV-Daten
+- [Yahoo Finance über yfinance](https://ranaroussi.github.io/yfinance/) für
+  QQQ, VIX und DXY
 - [Alternative.me Fear & Greed API](https://alternative.me/crypto/fear-and-greed-index/)
+- [exchange_calendars](https://github.com/gerrymanoim/exchange_calendars) für
+  reguläre Nasdaq-Sitzungen, Feiertage und verkürzte Handelstage
 
 Die Daten werden ausschliesslich für Ausbildung und Forschung verwendet. Für
-Yahoo-Finance-Daten gelten die jeweiligen Nutzungsbedingungen.
+die externen Marktdaten gelten die jeweiligen Nutzungsbedingungen.
