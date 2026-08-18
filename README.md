@@ -16,8 +16,9 @@ Das methodische Konzept steht in
 reproduzierbare Datenbeschaffung, zeitliche Ausrichtung, Leakage-Prüfungen und
 explorative Datenanalyse sowie die Expanding-window-Folds 2021-2025 und die
 historische Mehrheitsbaseline. Die logistische Regression ist als täglicher
-Walk-forward-Vergleich ohne und mit Bitcoin umgesetzt. Die weiteren Modelle
-werden im selben Notebook ergänzt.
+Walk-forward-Vergleich ohne und mit Bitcoin umgesetzt. XGBoost ergänzt denselben
+Vergleich mit festen, konservativen Parametern für nichtlineare Beziehungen.
+Chronos-2 und die finale Holdout-Auswertung werden im selben Notebook ergänzt.
 
 Vorgesehen sind:
 
