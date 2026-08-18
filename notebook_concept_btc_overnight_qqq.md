@@ -227,10 +227,17 @@ konservative Parameter und keine nachträgliche Suche auf dem Holdout.
 
 ### Chronos-2
 
-Chronos-2 prognostiziert den numerischen QQQ-Gap aus seiner historischen
-Zeitreihe. Aus dem Vorzeichen beziehungsweise dem Anteil positiver Samples
-leiten wir die Richtung ab. Damit vergleichen wir einen vortrainierten modernen
-Ansatz mit den klassischen Methoden.
+Chronos-2 prognostiziert den numerischen QQQ-Gap zero-shot. Wir vergleichen
+drei Varianten: nur die historische Gap-Zeitreihe, dieselben Kontrollfeatures
+wie bei XGBoost sowie Kontrollfeatures plus dieselben fünf Bitcoin-Merkmale.
+Historische Feature-Werte werden als `past_covariates` und die am Cutoff des
+Prognosetags bekannten Werte als `future_covariates` übergeben. Der unbekannte
+QQQ-Gap des Zieltags erscheint nie in den Kovariaten. Der Median ist die
+numerische Punktprognose; aus seinem Vorzeichen leiten wir die Richtung ab. Das
+10-%- und 90-%-Quantil bilden
+zusätzlich ein zentrales
+80-%-Prognoseintervall. Damit messen wir den Bitcoin-Zusatznutzen auch innerhalb
+des vortrainierten modernen Ansatzes, ohne ein neuronales Modell zu trainieren.
 
 ## 9. Evaluation
 
