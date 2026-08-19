@@ -20,8 +20,9 @@ Walk-forward-Vergleich ohne und mit Bitcoin umgesetzt. XGBoost ergänzt denselbe
 Vergleich mit festen, konservativen Parametern für nichtlineare Beziehungen.
 Chronos-2 ist zero-shot als univariate Referenz sowie mit denselben Kontroll-
 und Bitcoin-Features wie XGBoost umgesetzt. Die Richtung wird direkt aus dem
-Vorzeichen der numerischen Medianprognose abgeleitet. Die finale
-Holdout-Auswertung wird im selben Notebook ergänzt.
+Vorzeichen der numerischen Medianprognose abgeleitet. Der zuvor unberührte
+partielle Holdout von Januar bis Juni 2026 wird im letzten Abschnitt genau
+einmal mit der eingefrorenen Methodik ausgewertet.
 
 Vorgesehen sind:
 
@@ -29,7 +30,8 @@ Vorgesehen sind:
 2. logistische Regression als einfache statistische Methode,
 3. XGBoost als klassisches nichtlineares Machine-Learning-Modell,
 4. Chronos-2 als vortrainiertes Time-Series Foundation Model,
-5. Expanding-window-Validierung 2021-2025 und ein unberührter Holdout ab 2026,
+5. Expanding-window-Validierung 2021-2025 und ein finaler partieller Holdout
+   von Januar bis Juni 2026,
 6. ein direkter Vergleich der Feature-Sets ohne und mit Bitcoin.
 
 ## Projektstruktur
@@ -61,8 +63,8 @@ jupyter lab
 ```
 
 Beim ersten Durchlauf lädt das Notebook die Daten und legt lokale Caches unter
-`data/raw/` an. Diese Dateien werden nicht versioniert. Daten ab 2026 bleiben
-bis zur finalen Modellevaluation als Holdout unberührt.
+`data/raw/` an. Diese Dateien werden nicht versioniert. Daten ab 2026 werden
+erst im letzten Notebook-Abschnitt als finaler Holdout ausgewertet.
 
 Chronos-2 wird beim ersten Einsatz von Hugging Face geladen und danach im
 lokalen Modell-Cache wiederverwendet. Die Inferenz nutzt auf Apple Silicon MPS,

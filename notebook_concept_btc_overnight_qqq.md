@@ -88,10 +88,12 @@ werden nicht erzeugt.
 
 - Gesamter Datenzeitraum: Februar 2018 bis zum festen Datenstichtag.
 - Entwicklung und Walk-forward-Validierung: bis Ende 2025.
-- Finaler Holdout: ab 1. Januar 2026.
+- Finaler partieller Holdout: 1. Januar bis zum festen Datenstichtag 1. Juli
+  2026 (exklusiv).
 - Validierungsjahre: 2021 bis 2025.
 
-Der Holdout wird in EDA, Feature-Auswahl und Modellentwicklung nicht untersucht.
+Der Holdout wird in EDA, Feature-Auswahl und Modellentwicklung nicht untersucht
+und am Ende mit der eingefrorenen Methodik genau einmal ausgewertet.
 
 ## 4. Beobachtungseinheit und Merkmale
 
@@ -199,7 +201,7 @@ Vergangenheit bis 2021 -> Validierung 2022
 Vergangenheit bis 2022 -> Validierung 2023
 Vergangenheit bis 2023 -> Validierung 2024
 Vergangenheit bis 2024 -> Validierung 2025
-Finaler Holdout         -> 2026
+Finaler Holdout         -> Januar bis Juni 2026
 ```
 
 Jede Prognose nutzt nur Beobachtungen, deren Ziel zu diesem Zeitpunkt bereits
