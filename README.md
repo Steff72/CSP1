@@ -12,7 +12,7 @@ zum nächsten QQQ-Open berechnet; die primäre Zielvariable ist sein Vorzeichen.
 
 Das methodische Konzept steht in
 `notebook_concept_btc_overnight_qqq.md`. Das zentrale Notebook
-`notebooks/btc_overnight_qqq_forecasting.ipynb` enthält derzeit Setup,
+`notebooks/btc_overnight_qqq_forecasting.ipynb` enthält Setup,
 reproduzierbare Datenbeschaffung, zeitliche Ausrichtung, Leakage-Prüfungen und
 explorative Datenanalyse sowie die Expanding-window-Folds 2021-2025 und die
 historische Mehrheitsbaseline. Die logistische Regression ist als täglicher
@@ -24,7 +24,7 @@ Vorzeichen der numerischen Medianprognose abgeleitet. Der zuvor unberührte
 partielle Holdout von Januar bis Juni 2026 wird im letzten Abschnitt genau
 einmal mit der eingefrorenen Methodik ausgewertet.
 
-Vorgesehen sind:
+Umgesetzt sind:
 
 1. eine historische Mehrheitsklasse als naive Baseline,
 2. logistische Regression als einfache statistische Methode,
@@ -46,9 +46,8 @@ Vorgesehen sind:
 └── README.md
 ```
 
-Alle inhaltlichen Schritte bleiben im Notebook nachvollziehbar. Eine
-`helpers.py` wird nur eingeführt, falls eine kleine technische Hilfsfunktion
-später tatsächlich mehrfach benötigt wird.
+Alle inhaltlichen Schritte bleiben im Notebook nachvollziehbar. Es gibt keine
+`helpers.py`; die gesamte Fachlogik ist direkt im Notebook sichtbar.
 
 ## Lokales Setup
 

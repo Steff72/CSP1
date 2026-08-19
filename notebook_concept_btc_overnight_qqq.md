@@ -257,7 +257,8 @@ den MAE des numerischen Gaps. Die Haupttabelle zeigt:
 - Ergebnisse insgesamt,
 - Kontrollmodell gegen Bitcoin-Modell,
 - Ergebnisse pro Validierungsjahr,
-- eine separate Montagszeile als Analyse der längeren Wochenendfenster.
+- eine separate Montagszeile als Analyse der längeren Wochenendfenster,
+- eine Confusion Matrix für das vor dem Holdout festgelegte Hauptmodell.
 
 ## 10. Notebook-Stil und Technik
 
