@@ -10,9 +10,8 @@ New Yorker Zeit, 30 Minuten vor der nächsten regulären Eröffnung. Das
 numerische Gap wird als logarithmische Rendite vom vorherigen QQQ-Schluss bis
 zum nächsten QQQ-Open berechnet; die primäre Zielvariable ist sein Vorzeichen.
 
-Das methodische Konzept steht in
-`notebook_concept_btc_overnight_qqq.md`. Das zentrale Notebook
-`notebooks/btc_overnight_qqq_forecasting.ipynb` enthält Setup,
+Das zentrale Notebook `notebooks/btc_overnight_qqq_forecasting.ipynb` enthält
+Setup,
 reproduzierbare Datenbeschaffung, zeitliche Ausrichtung, Leakage-Prüfungen und
 explorative Datenanalyse sowie die Expanding-window-Folds 2021-2025 und die
 historische Mehrheitsbaseline. Die logistische Regression ist als täglicher
@@ -20,9 +19,15 @@ Walk-forward-Vergleich ohne und mit Bitcoin umgesetzt. XGBoost ergänzt denselbe
 Vergleich mit festen, konservativen Parametern für nichtlineare Beziehungen.
 Chronos-2 ist zero-shot als univariate Referenz sowie mit denselben Kontroll-
 und Bitcoin-Features wie XGBoost umgesetzt. Die Richtung wird direkt aus dem
-Vorzeichen der numerischen Medianprognose abgeleitet. Der zuvor unberührte
-partielle Holdout von Januar bis Juni 2026 wird im letzten Abschnitt genau
-einmal mit der eingefrorenen Methodik ausgewertet.
+Vorzeichen der numerischen Medianprognose abgeleitet. Der partielle Holdout vom
+2. Januar bis 31. August 2026 wird im letzten Abschnitt mit der vorab
+festgelegten Methodik ausgewertet.
+
+Auf den 166 Handelstagen des Holdouts erreicht XGBoost mit Bitcoin-Features
+73,5 % Accuracy und 74,0 % Balanced Accuracy. Die XGBoost-Kontrollvariante ohne
+Bitcoin erreicht 51,2 % Accuracy und 54,2 % Balanced Accuracy. Diese
+Prognoseergebnisse belegen weder Kausalität noch die Profitabilität einer
+Handelsstrategie.
 
 Umgesetzt sind:
 
@@ -31,7 +36,7 @@ Umgesetzt sind:
 3. XGBoost als klassisches nichtlineares Machine-Learning-Modell,
 4. Chronos-2 als vortrainiertes Time-Series Foundation Model,
 5. Expanding-window-Validierung 2021-2025 und ein finaler partieller Holdout
-   von Januar bis Juni 2026,
+   vom 2. Januar bis 31. August 2026,
 6. ein direkter Vergleich der Feature-Sets ohne und mit Bitcoin.
 
 ## Projektstruktur
@@ -40,7 +45,12 @@ Umgesetzt sind:
 .
 ├── notebooks/
 │   └── btc_overnight_qqq_forecasting.ipynb
-├── notebook_concept_btc_overnight_qqq.md
+├── output/
+│   └── pdf/
+│       └── btc_overnight_qqq_forecasting.pdf
+├── notebooklm/
+│   ├── Predicting_QQQ_Gaps_via_Bitcoin.pdf
+│   └── Predicting_QQQ_Gaps_via_Bitcoin.pptx
 ├── Time_Series_Challenge_Proposal_Balz_Binkert_simplified.docx
 ├── requirements.txt
 └── README.md
@@ -48,6 +58,8 @@ Umgesetzt sind:
 
 Alle inhaltlichen Schritte bleiben im Notebook nachvollziehbar. Es gibt keine
 `helpers.py`; die gesamte Fachlogik ist direkt im Notebook sichtbar.
+Die Unterlagen im Ordner `notebooklm/` dienen der zusammenfassenden Darstellung;
+für Methodik, Berechnungen und Resultate ist das ausgeführte Notebook massgebend.
 
 ## Lokales Setup
 
@@ -63,7 +75,7 @@ jupyter lab
 
 Beim ersten Durchlauf lädt das Notebook die Daten und legt lokale Caches unter
 `data/raw/` an. Diese Dateien werden nicht versioniert. Daten ab 2026 werden
-erst im letzten Notebook-Abschnitt als finaler Holdout ausgewertet.
+erst im letzten Notebook-Abschnitt als partieller Holdout ausgewertet.
 
 Chronos-2 wird beim ersten Einsatz von Hugging Face geladen und danach im
 lokalen Modell-Cache wiederverwendet. Die Inferenz nutzt auf Apple Silicon MPS,
