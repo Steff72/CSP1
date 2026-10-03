@@ -6,9 +6,11 @@ Der vollständige Blog liegt als gestaltete Webseite in `index.html` und als üb
 
 `index.html` lässt sich direkt im Browser öffnen. Die Seite benötigt keine Installation und keine Internetverbindung für Text, Bilder oder Gestaltung. Externe Quellenlinks benötigen eine Internetverbindung.
 
-## Auf GitHub Pages veröffentlichen
+## Veröffentlichung auf GitHub Pages
 
-Nach dem Commit und Push dieses Ordners im GitHub-Repository unter **Settings → Pages** die Veröffentlichung aus einem Branch auswählen und als Ordner **/docs** festlegen. Der Ordner enthält eine `.nojekyll`-Datei und kann als statische Seite ausgeliefert werden.
+Die Blogadresse lautet [Bitcoin als Frühindikator für den QQQ Eröffnungsgap](https://steff72.github.io/CSP1/).
+
+Im GitHub-Repository `Steff72/CSP1` ist unter **Settings → Pages** die Veröffentlichung aus dem Branch **main** und dem Ordner **/docs** eingerichtet. Nach einem Commit und Push von Änderungen an diesem Ordner aktualisiert GitHub Pages die Seite automatisch. Die `.nojekyll`-Datei sorgt für die Auslieferung als statische Seite.
 
 Für Kaggle oder einen anderen Blog kann `BLOG.md` als Artikelgrundlage verwendet werden. Die Bilddateien in `assets/charts` und `assets/illustrationen` müssen dort ebenfalls hochgeladen und die Bildverweise an die Plattform angepasst werden.
 

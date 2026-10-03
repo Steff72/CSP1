@@ -98,7 +98,8 @@ die externen Marktdaten gelten die jeweiligen Nutzungsbedingungen.
 
 Der Beitrag [Bitcoin als Frühindikator für den QQQ Eröffnungsgap](docs/BLOG.md)
 erzählt die Ansätze, Ergebnisse und Erfahrungen des Projekts. Die gestaltete
-Blogseite liegt in [docs/index.html](docs/index.html) und ist für eine
-Veröffentlichung über GitHub Pages vorbereitet. Die Charts stammen unverändert
+[Blogseite auf GitHub Pages](https://steff72.github.io/CSP1/) wird aus dem
+Ordner `docs/` veröffentlicht; die lokale Version liegt in
+[docs/index.html](docs/index.html). Die Charts stammen unverändert
 aus den gespeicherten Notebook-Ausgaben; zwei Illustrationen wurden aus den
 Slides übernommen. Hinweise zur Veröffentlichung stehen in [docs/README.md](docs/README.md).
