@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bitcoin als Frühindikator für den QQQ Eröffnungsgap · CSP1</title>
+  <meta name="description" content="Unsere Time Series Challenge: Wie Bitcoin-Overnight-Daten die Richtung des QQQ-Eröffnungsgaps erklären helfen, weshalb XGBoost vorne liegt und was wir dabei gelernt haben.">
+  <meta name="author" content="Sandro Balz und Stefan Binkert">
+  <meta name="theme-color" content="#087c78">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23172936'/%3E%3Cpath d='M6 23L12 15L18 19L26 8' fill='none' stroke='%2362c6b5' stroke-width='3'/%3E%3C/svg%3E">
+</head>
+<body id="top">
+  <a class="skip-link" href="#beitrag">Zum Beitrag</a>
+  <div class="shell">
+    <header class="masthead"><a href="#top">CSP1<span class="project-name">Time Series Challenge</span></a><p>FHNW · Data Science &amp; AI</p></header>
+    <main>
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Bitcoin · QQQ · Zeitreihen</p>
+          <h1>Bitcoin als Frühindikator für den QQQ Eröffnungsgap</h1>
+          <p class="hero-lead">Die reguläre US-Börsensitzung ist vorbei. Die Bildschirme werden ruhiger, irgendwo wird der letzte Kaffee kalt. Bitcoin handelt weiter. Unsere Frage: Steckt in dieser nächtlichen Aktivität bereits ein Hinweis darauf, wie der Nasdaq-100-ETF QQQ am nächsten Handelstag eröffnet?</p>
+          <p class="byline"><strong>Sandro Balz &amp; Stefan Binkert</strong><br><time datetime="2026-10-02">2. Oktober 2026</time> · 12 Minuten Lesezeit</p>
+        </div>
+        <figure class="hero-figure"><img src="assets/illustrationen/btc-fruehindikator.png" alt="Zielscheibe mit schematischen Kurslinien als Illustration der Prognosefrage" width="580" height="398"><figcaption class="hero-credit">Illustration aus unseren Projektfolien · Seite 2<br>Schematische Linien, keine Messdaten</figcaption></figure>
+      </header>
+      <section class="result-strip" aria-label="Ergebnis von XGBoost mit Bitcoin im Holdout">
+        <p class="result-context">XGBoost mit Bitcoin · Holdout vom 2. Januar bis 31. August 2026</p>
+        <dl class="result-values"><div><dt>Accuracy</dt><dd>73,5 %</dd></div><div><dt>Balanced Accuracy</dt><dd>74,0 %</dd></div><div><dt>Handelstage im Test</dt><dd>166</dd></div></dl>
+      </section>
+      <article class="article" id="beitrag" aria-label="Projektblog"><p><strong>Unser Ergebnis:</strong> Im Testzeitraum vom 2. Januar bis 31. August 2026 prognostiziert XGBoost mit Bitcoin-Merkmalen die Richtung des QQQ-Eröffnungsgaps an <strong>73,5&nbsp;% der 166 Handelstage</strong> richtig. Ohne diese Merkmale sind es bei derselben Modellklasse 51,2&nbsp;%. Das ist ein interessanter Befund. Für die Bestellung einer Yacht reicht er noch nicht.</p>
+<details class="toc"><summary>Im Beitrag</summary><ol><li><a href="#was-wir-vor-der-eroeffnung-wissen-wollen">Was wir vor der Eröffnung wissen wollen</a></li><li><a href="#die-wichtigste-modellkomponente-ist-die-uhr">Die wichtigste Modellkomponente ist die Uhr</a></li><li><a href="#wie-aus-einer-bitcoin-nacht-fuenf-merkmale-werden">Wie aus einer Bitcoin Nacht fünf Merkmale werden</a></li><li><a href="#die-ersten-charts-machen-neugierig">Die ersten Charts machen neugierig</a></li><li><a href="#vier-ansaetze-treten-zum-vergleich-an">Vier Ansätze treten zum Vergleich an</a></li><li><a href="#was-die-validierung-ueber-bitcoin-zeigt">Was die Validierung über Bitcoin zeigt</a></li><li><a href="#der-holdout-von-januar-bis-august-2026">Der Holdout von Januar bis August 2026</a></li><li><a href="#was-wir-aus-dem-projekt-mitnehmen">Was wir aus dem Projekt mitnehmen</a></li><li><a href="#was-das-ergebnis-bedeutet-und-was-offen-bleibt">Was das Ergebnis bedeutet und was offen bleibt</a></li><li><a href="#notebook-und-quellen">Notebook und Quellen</a></li></ol></details>
+<h2 id="was-wir-vor-der-eroeffnung-wissen-wollen"><span class="section-number" aria-hidden="true">01</span>Was wir vor der Eröffnung wissen wollen</h2>
+<p>Wir versuchen weder den nächsten Bitcoin-Kurs noch den gesamten Börsentag vorherzusagen. Die Aufgabe ist enger: <strong>Eröffnet QQQ um 09:30 Uhr New Yorker Zeit höher als beim Schluss der vorherigen regulären Sitzung?</strong> Eine gleich hohe oder tiefere Eröffnung zählt zur anderen Klasse.</p>
+<p>Die Lücke zwischen diesen beiden Kursen heisst Eröffnungsgap. Im Notebook berechnen wir sie als logarithmische Rendite: <code>log(aktueller QQQ Open / vorheriger QQQ Close)</code>. Für die Klassifikation interessiert uns ihr Vorzeichen. Anschaulich: Schliesst QQQ bei 500 und eröffnet bei 505, ist der Gap positiv. Bei einem Open von 495 ist er negativ. Diese Kurse sind nur ein Rechenbeispiel.</p>
+<p>Bitcoin könnte dabei als frühes Stimmungsbarometer dienen. Eine mögliche Erklärung ist, dass Kryptomärkte während der geschlossenen US-Kassamärkte neue Nachrichten und globale Risikostimmung aufnehmen. Ob Bitcoin tatsächlich Information überträgt oder beide Märkte auf dieselben Nachrichten reagieren, kann unser Experiment allerdings nicht unterscheiden.</p>
+<p>Um den zusätzlichen Nutzen zu messen, vergleichen wir jeweils <strong>dasselbe Modell ohne und mit Bitcoin</strong>. Ein guter Wert allein wäre zu wenig: Vielleicht liefern bereits die QQQ-Historie oder andere Marktindikatoren die entscheidende Information.</p>
+<h2 id="die-wichtigste-modellkomponente-ist-die-uhr"><span class="section-number" aria-hidden="true">02</span>Die wichtigste Modellkomponente ist die Uhr</h2>
+<p>Um <strong>09:00 Uhr New Yorker Zeit</strong> machen wir den Informationsdeckel zu. Erst um 09:30 Uhr entsteht der Zielwert. Die letzte halbe Stunde bleibt vollständig ausserhalb unserer Merkmale. Ein Prognosemodell mit einem heimlichen Blick auf den Eröffnungskurs wäre beeindruckend treffsicher und ungefähr so nützlich wie eine Wettervorhersage von gestern.</p>
+<p>Das Bitcoin-Fenster beginnt beim tatsächlichen Schluss der vorherigen Nasdaq-Sitzung. An einem normalen Handelstag umfasst es 17 Stunden; vor einem Montag typischerweise 65 Stunden. Feiertage und verkürzte Sitzungen erzeugen weitere Varianten, im Datensatz bis zu 92 Stunden. Deshalb verwenden wir einen Börsenkalender und die Zeitzone <code>America/New_York</code>, statt überall pauschal einen Tag abzuziehen.</p>
+<p>In jedes Fenster dürfen nur vollständig abgeschlossene Bitcoin-Stundenkerzen gelangen. Fehlen Stunden, verwerfen wir das Fenster. Wir füllen es nicht mit erfundenen Kursen auf. QQQ, VIX und DXY stammen aus der vorherigen abgeschlossenen Sitzung; bei Fear &amp; Greed verwenden wir den letzten Wert mit einem Zeitstempel vor oder genau am Cutoff.</p>
+<div class="table-wrap" role="region" tabindex="0" aria-label="Datentabelle"><table>
+<thead>
+<tr>
+<th>Daten</th>
+<th>Quelle</th>
+<th>Rolle im Experiment</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Stündliche Bitcoin-Kurse und Volumen</td>
+<td>Binance Public Data</td>
+<td>Nächtliche Aktivität</td>
+</tr>
+<tr>
+<td>QQQ</td>
+<td>Yahoo Finance über yfinance</td>
+<td>Zielwert und eigene Kurshistorie</td>
+</tr>
+<tr>
+<td>VIX und US-Dollar-Index DXY</td>
+<td>Yahoo Finance über yfinance</td>
+<td>Volatilitäts- und Makroumfeld</td>
+</tr>
+<tr>
+<td>Fear &amp; Greed</td>
+<td>Alternative.me</td>
+<td>Krypto-Sentiment</td>
+</tr>
+<tr>
+<td>Nasdaq-Sitzungen</td>
+<td>exchange_calendars</td>
+<td>Feiertage, Sitzungsschlüsse und Fensterlängen</td>
+</tr>
+</tbody></table></div>
+<p>Nach der Bereinigung bleiben <strong>2’111 Tagesbeobachtungen</strong>: 1’945 für Entwicklung und Validierung sowie 166 für den späteren Holdout. 44 Zeilen fallen wegen unvollständiger Bitcoin-Fenster oder noch nicht verfügbarer gleitender Merkmale weg. Der fertige Datensatz beginnt am 5. März 2018.</p>
+<h2 id="wie-aus-einer-bitcoin-nacht-fuenf-merkmale-werden"><span class="section-number" aria-hidden="true">03</span>Wie aus einer Bitcoin Nacht fünf Merkmale werden</h2>
+<p>Ein Modell kann mit «Bitcoin war heute irgendwie nervös» wenig anfangen. Wir übersetzen die Nacht deshalb in fünf messbare Eigenschaften.</p>
+<div class="table-wrap" role="region" tabindex="0" aria-label="Datentabelle"><table>
+<thead>
+<tr>
+<th>Bitcoin-Merkmal</th>
+<th>Die Frage dahinter</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Overnight-Return</td>
+<td>Ist Bitcoin über das gesamte Fenster gestiegen oder gefallen?</td>
+</tr>
+<tr>
+<td>Volatilitätsintensität</td>
+<td>Wie stark waren die stündlichen Bewegungen?</td>
+</tr>
+<tr>
+<td>Handelsspanne</td>
+<td>Wie weit lagen das höchste Hoch und das tiefste Tief auseinander?</td>
+</tr>
+<tr>
+<td>Logarithmierte Volumenintensität</td>
+<td>Wie viel wurde durchschnittlich pro Stunde gehandelt?</td>
+</tr>
+<tr>
+<td>Maximaler Drawdown</td>
+<td>Wie stark fiel der Kurs innerhalb des Fensters von einem zwischenzeitlichen Hoch?</td>
+</tr>
+</tbody></table></div>
+<p>Die Normierung ist entscheidend: Ein Wochenende hat schon wegen seiner Länge mehr Gelegenheit, Handelsvolumen anzusammeln. Ein Vergleich des reinen Gesamtvolumens würde leicht einen Kalendereffekt als Marktsignal verkleiden. Deshalb messen wir Volumen pro Stunde und die Volatilität als Wurzel des mittleren quadrierten Stundenreturns. Return, Handelsspanne und Drawdown beschreiben dagegen das gesamte Fenster.</p>
+<p>Unser Kontrollset enthält zwölf Merkmale aus QQQ-Historie, VIX, DXY, Fear &amp; Greed und Kalender. Das Bitcoin-Set ergänzt genau diese fünf Variablen und kommt damit auf 17 Merkmale. Beide Sets stehen vor dem Modellvergleich fest. Wir lassen also nicht nachträglich nur jene Zutaten im Rezept, die zufällig den besten Kuchen ergeben haben.</p>
+<h2 id="die-ersten-charts-machen-neugierig"><span class="section-number" aria-hidden="true">04</span>Die ersten Charts machen neugierig</h2>
+<p>Die explorative Analyse bleibt auf Daten vor 2026 beschränkt. Sie zeigt einen positiven, aber keineswegs perfekten Zusammenhang zwischen Bitcoin-Overnight-Return und QQQ-Gap. Die lineare Korrelation beträgt <strong>0,316</strong>. Der Scatterplot erinnert entsprechend eher an eine lebhafte Punktwolke als an eine ordentlich aufgereihte Zugverbindung.</p>
+<figure class="chart wide"><div class="figure-frame"><a href="assets/charts/btc-return-qqq-gap.png" aria-label="Originalgrafik öffnen: Scatterplot des Bitcoin Overnight Returns und des QQQ Eröffnungsgaps, eingefärbt nach Fear and Greed"><img src="assets/charts/btc-return-qqq-gap.png" alt="Scatterplot des Bitcoin Overnight Returns und des QQQ Eröffnungsgaps, eingefärbt nach Fear and Greed" width="1014" height="642"></a></div><figcaption>Abbildung 1 · Entwicklungsdaten vor 2026. Originalgrafik aus Notebook-Abschnitt 7.2. Eine Korrelation beschreibt einen Zusammenhang, noch keine Leistung auf späteren Daten.<a class="original-link" href="assets/charts/btc-return-qqq-gap.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Noch anschaulicher wird es, wenn wir die Bitcoin-Returns in fünf gleich grosse Gruppen teilen. In der Gruppe mit den tiefsten Returns eröffnet QQQ in <strong>37,3&nbsp;%</strong> der Fälle positiv; in der Gruppe mit den höchsten Returns sind es <strong>70,7&nbsp;%</strong>. Der Anteil steigt über die fünf Gruppen geordnet an.</p>
+<figure class="chart"><div class="figure-frame"><a href="assets/charts/btc-quintile.png" aria-label="Originalgrafik öffnen: Anteil positiver QQQ Gaps in fünf Gruppen des Bitcoin Overnight Returns"><img src="assets/charts/btc-quintile.png" alt="Anteil positiver QQQ Gaps in fünf Gruppen des Bitcoin Overnight Returns" width="972" height="532"></a></div><figcaption>Abbildung 2 · Je 389 Entwicklungsbeobachtungen pro Quintil. Originalgrafik aus Notebook-Abschnitt 7.3. Die Gruppengrenzen dienen der Beschreibung und werden nicht als optimierte Handelsschwellen verwendet.<a class="original-link" href="assets/charts/btc-quintile.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Das sieht vielversprechend aus. Es ist aber weiterhin ein Blick auf bekannte Entwicklungsdaten. Die eigentliche Prüfung lautet: Hilft die Information auch bei einer Prognose, deren Ergebnis das Modell noch nicht kennt?</p>
+<h2 id="vier-ansaetze-treten-zum-vergleich-an"><span class="section-number" aria-hidden="true">05</span>Vier Ansätze treten zum Vergleich an</h2>
+<p><strong>Die historische Mehrheitsklasse</strong> ist unser minimaler Gegner. Vor jedem Tag schaut sie, welche Gap-Richtung in der bisherigen Historie häufiger war. Im Validierungszeitraum sagt sie dadurch immer «positiv» und erreicht 55,1&nbsp;% Accuracy. Ein Modell kann also öfter richtig als falsch liegen, ohne einen einzigen negativen Gap zu erkennen. Der Optimist im Raum hat bereits einen respektablen Lebenslauf.</p>
+<p>Darum berichten wir zusätzlich die <strong>Balanced Accuracy</strong>: den Mittelwert der Trefferquote für positive und nicht positive Gaps. Beide Klassen erhalten dasselbe Gewicht. Die Mehrheitsbaseline landet hier bei 50,0&nbsp;%. Erst diese zweite Perspektive zeigt, ob ein Modell beide Richtungen unterscheiden kann.</p>
+<p><strong>Die logistische Regression</strong> schätzt die Wahrscheinlichkeit eines positiven Gaps mit einer linearen Entscheidungsfunktion. Sie ist unser verständlicher, leichtgewichtiger Vergleich. Die Merkmale werden vor jeder Prognose ausschliesslich anhand der damaligen Trainingshistorie standardisiert.</p>
+<p><strong>XGBoost</strong> kombiniert kleine Entscheidungsbäume und kann nichtlineare Beziehungen sowie das Zusammenspiel mehrerer Merkmale abbilden. Wir verwenden 150 bewusst flache Bäume mit Tiefe 2 und feste, konservative Einstellungen.</p>
+<p><strong>Chronos-2</strong> bringt vortrainiertes Wissen über Zeitreihen mit. Es unterstützt Prognosen mit zusätzlichen Begleitvariablen, wie im <a href="https://github.com/amazon-science/chronos-forecasting">offiziellen Repository</a> beschrieben. Wir nutzen es ohne Fine-Tuning in drei Varianten: nur mit vergangenen QQQ-Gaps, mit den Kontrollmerkmalen und mit Kontrolle plus Bitcoin. Es prognostiziert den numerischen Gap; das Vorzeichen seiner Medianprognose liefert die Richtung.</p>
+<p>Das Experiment läuft chronologisch. Zuerst stehen Daten von 2018 bis 2020 zur Verfügung, dann prognostizieren wir 2021. Für 2022 ist die bis dahin bekannte Historie länger, und so weiter bis 2025. Innerhalb jedes Jahres werden logistische Regression und XGBoost vor jedem Prognosetag neu trainiert; der gerade erst beobachtete Tag darf danach zur Vergangenheit des nächsten Tages werden. Dieses Vorgehen entspricht dem Prinzip der <a href="https://otexts.com/fpp3/tscv.html">Zeitreihenvalidierung mit fortlaufendem Prognoseursprung</a>.</p>
+<p>So entstehen <strong>1’248 Prognosetermine von 2021 bis 2025</strong>. Alle Modelle werden an denselben Tagen beurteilt. Die Jahre werden nicht zufällig durchmischt. Features, Parameter und Entscheidungsregeln bleiben fest; eine Hyperparametersuche ist nicht Teil dieses Experiments.</p>
+<h2 id="was-die-validierung-ueber-bitcoin-zeigt"><span class="section-number" aria-hidden="true">06</span>Was die Validierung über Bitcoin zeigt</h2>
+<p>In der Validierung erreicht XGBoost mit Bitcoin <strong>63,3&nbsp;% Accuracy und 62,5&nbsp;% Balanced Accuracy</strong>. Ohne Bitcoin liegt seine Balanced Accuracy bei 52,6&nbsp;%. Der Zusatz beträgt damit 9,9 Prozentpunkte. Bei der Accuracy gewinnt die Bitcoin-Variante in allen fünf Validierungsjahren gegen ihre Kontrollvariante.</p>
+<p>Auch die logistische Regression profitiert: Mit Bitcoin steigt ihre Balanced Accuracy von 51,5&nbsp;% auf 59,6&nbsp;%. Das Signal hängt in unserem Vergleich also nicht allein an einer besonders flexiblen Modellklasse.</p>
+<figure class="chart wide"><div class="figure-frame"><a href="assets/charts/modellvergleich-validierung.png" aria-label="Originalgrafik öffnen: Gesamtvergleich aller Modelle in der Validierung und jährliche Accuracy der drei Chronos Varianten"><img src="assets/charts/modellvergleich-validierung.png" alt="Gesamtvergleich aller Modelle in der Validierung und jährliche Accuracy der drei Chronos Varianten" width="2182" height="620"></a></div><figcaption>Abbildung 3 · Validierung 2021 bis 2025 auf 1’248 gemeinsamen Prognoseterminen. Originalgrafik aus Notebook-Abschnitt 11.2. Die rechte Hälfte zeigt Accuracy, nicht Balanced Accuracy.<a class="original-link" href="assets/charts/modellvergleich-validierung.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Die Feature-Importance des auf allen Entwicklungsdaten geschätzten XGBoost-Modells passt dazu: Der Bitcoin-Overnight-Return erhält im Modell mit Bitcoin das höchste Gewicht. Zusammen entfallen <strong>40,9&nbsp;% der normalisierten Importance</strong> auf die fünf Bitcoin-Merkmale.</p>
+<figure class="chart wide"><div class="figure-frame"><a href="assets/charts/xgboost-feature-importance.png" aria-label="Originalgrafik öffnen: Die zehn wichtigsten Merkmale der XGBoost Kontrolle und der XGBoost Variante mit Bitcoin"><img src="assets/charts/xgboost-feature-importance.png" alt="Die zehn wichtigsten Merkmale der XGBoost Kontrolle und der XGBoost Variante mit Bitcoin" width="1632" height="664"></a></div><figcaption>Abbildung 4 · Deskriptive Modelle auf den Entwicklungsdaten bis Ende 2025. Originalgrafik aus Notebook-Abschnitt 10.2. Importance zeigt die Nutzung eines Merkmals im Modell; sie erklärt weder Wirkungsrichtung noch Kausalität.<a class="original-link" href="assets/charts/xgboost-feature-importance.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Chronos-2 erreicht mit Bitcoin 53,5&nbsp;% Balanced Accuracy und bleibt hinter den beiden trainierten Bitcoin-Modellen zurück. Die zusätzliche Information hilft auch hier, aber weniger stark. Die grosse Modellfamilie bringt also keine automatische Garantie für die beste Lösung einer kleinen, spezialisierten Finanzaufgabe mit.</p>
+<p>Eine weitere Erfahrung betrifft Unsicherheit: Das nominelle 80-%-Prognoseintervall von Chronos-2 mit Bitcoin enthält in der Validierung nur <strong>40,1&nbsp;%</strong> der tatsächlichen Gaps. Ein schön gezeichnetes Unsicherheitsband muss sich seine Glaubwürdigkeit ebenfalls verdienen.</p>
+<p>Auf Grundlage dieser Validierung legen wir <strong>XGBoost mit Bitcoin als Hauptmodell fest, bevor wir den Holdout auswerten</strong>.</p>
+<h2 id="der-holdout-von-januar-bis-august-2026"><span class="section-number" aria-hidden="true">07</span>Der Holdout von Januar bis August 2026</h2>
+<p>Bis hierhin war 2026 für die Entwicklung verschlossen. Nun prüfen wir die festgelegte Methode auf den <strong>166 Handelstagen vom 2. Januar bis 31. August 2026</strong>. Es handelt sich um acht Monate, nicht um ein vollständiges Kalenderjahr.</p>
+<figure class="illustration"><img src="assets/illustrationen/holdout-tresor.png" alt="Illustration mit Entwicklungsdaten, einem verschlossenen Tresor und dem Holdout 2026" width="1300" height="360"><figcaption>Illustration aus unseren Präsentationsfolien, Predicting QQQ Gaps via Bitcoin, Seite 12. Der Tresor steht für die Trennung von Modellentwicklung und abschliessender Auswertung.</figcaption></figure>
+<p>Die Methodik bleibt eingefroren. Das Training wächst trotzdem täglich um inzwischen bekannte Beobachtungen: am ersten Holdout-Tag stehen 1’945 frühere Tage zur Verfügung, am letzten 2’110. «Holdout» bedeutet hier also eine sequenzielle Prüfung einer vorher festgelegten Methode. Es bedeutet nicht, dass ein einziges, im Dezember trainiertes Modell acht Monate unverändert weiterläuft.</p>
+<div class="table-wrap wide" role="region" tabindex="0" aria-label="Vergleich der Validierungs- und Holdout-Ergebnisse"><table>
+<thead>
+<tr>
+<th>Modell</th>
+<th align="right">Validierung 2021 bis 2025 Balanced Accuracy</th>
+<th align="right">Holdout Accuracy</th>
+<th align="right">Holdout Balanced Accuracy</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Historische Mehrheitsklasse</td>
+<td align="right">50,0&nbsp;%</td>
+<td align="right">56,6&nbsp;%</td>
+<td align="right">50,0&nbsp;%</td>
+</tr>
+<tr>
+<td>Logistische Regression Kontrolle</td>
+<td align="right">51,5&nbsp;%</td>
+<td align="right">48,2&nbsp;%</td>
+<td align="right">51,7&nbsp;%</td>
+</tr>
+<tr>
+<td>Logistische Regression + Bitcoin</td>
+<td align="right">59,6&nbsp;%</td>
+<td align="right">66,3&nbsp;%</td>
+<td align="right">65,2&nbsp;%</td>
+</tr>
+<tr>
+<td>XGBoost Kontrolle</td>
+<td align="right">52,6&nbsp;%</td>
+<td align="right">51,2&nbsp;%</td>
+<td align="right">54,2&nbsp;%</td>
+</tr>
+<tr class="selected"><td><strong>XGBoost + Bitcoin</strong></td>
+<td align="right"><strong>62,5&nbsp;%</strong></td>
+<td align="right"><strong>73,5&nbsp;%</strong></td>
+<td align="right"><strong>74,0&nbsp;%</strong></td>
+</tr>
+<tr>
+<td>Chronos-2 nur Gap-Historie</td>
+<td align="right">49,6&nbsp;%</td>
+<td align="right">56,6&nbsp;%</td>
+<td align="right">50,0&nbsp;%</td>
+</tr>
+<tr>
+<td>Chronos-2 Kontrolle</td>
+<td align="right">50,7&nbsp;%</td>
+<td align="right">53,0&nbsp;%</td>
+<td align="right">49,6&nbsp;%</td>
+</tr>
+<tr>
+<td>Chronos-2 + Bitcoin</td>
+<td align="right">53,5&nbsp;%</td>
+<td align="right">57,2&nbsp;%</td>
+<td align="right">54,4&nbsp;%</td>
+</tr>
+</tbody></table></div>
+<p class="table-note">Alle Holdout-Werte beziehen sich auf dieselben 166 Tage; die Validierungswerte auf dieselben 1’248 Prognosetermine. Zahlen aus den ausgeführten Ergebnistabellen, auf eine Dezimalstelle gerundet. «Kontrolle» bezeichnet das Set ohne Bitcoin; die reine Gap-Historie entspricht der im Notebook als «Chronos-2 Zero-shot» bezeichneten univariaten Referenz. Auch die beiden anderen Chronos-Varianten werden ohne Fine-Tuning eingesetzt.</p>
+<figure class="chart wide"><div class="figure-frame"><a href="assets/charts/modellvergleich-holdout.png" aria-label="Originalgrafik öffnen: Modellleistung im Holdout 2026 und Vergleich der Balanced Accuracy zwischen Validierung und Holdout"><img src="assets/charts/modellvergleich-holdout.png" alt="Modellleistung im Holdout 2026 und Vergleich der Balanced Accuracy zwischen Validierung und Holdout" width="2181" height="862"></a></div><figcaption>Abbildung 5 · Originalgrafik aus Notebook-Abschnitt 12.3. Links stehen die Holdout-Metriken, rechts die Balanced Accuracy der beiden Zeiträume.<a class="original-link" href="assets/charts/modellvergleich-holdout.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Der zentrale Vergleich fällt deutlich aus: <strong>74,0&nbsp;% statt 54,2&nbsp;% Balanced Accuracy innerhalb von XGBoost</strong>, ein Bitcoin-Zusatz von <strong>19,8 Prozentpunkten</strong>. Die Bitcoin-Variante ist in sieben von acht Monaten besser als ihre Kontrolle. Im Januar gilt das Gegenteil. Da jeder Monat nur 19 bis 22 Beobachtungen umfasst, verstehen wir das als einfache Stabilitätskontrolle.</p>
+<p>Die Confusion Matrix übersetzt die Prozentwerte in konkrete Fälle: 56 nicht positive und 66 positive Gaps werden richtig erkannt. Hinzu kommen <strong>16 falsch positive und 28 falsch negative Prognosen</strong>. Insgesamt sind das <strong>122 richtige und 44 falsche Entscheidungen</strong>. Diese 44 Fehlprognosen gehören genauso zur Geschichte wie die 73,5&nbsp;%.</p>
+<figure class="chart matrix"><div class="figure-frame"><a href="assets/charts/xgboost-confusion-matrix.png" aria-label="Originalgrafik öffnen: Confusion Matrix von XGBoost mit Bitcoin im Holdout mit 56 richtig nicht positiven, 66 richtig positiven, 16 falsch positiven und 28 falsch negativen Fällen"><img src="assets/charts/xgboost-confusion-matrix.png" alt="Confusion Matrix von XGBoost mit Bitcoin im Holdout mit 56 richtig nicht positiven, 66 richtig positiven, 16 falsch positiven und 28 falsch negativen Fällen" width="807" height="587"></a></div><figcaption>Abbildung 6 · Originalgrafik aus Notebook-Abschnitt 12.3. Zeilen zeigen die tatsächliche Richtung, Spalten die Prognose. «Nicht positiv» umfasst gleiche und tiefere Eröffnungen.<a class="original-link" href="assets/charts/xgboost-confusion-matrix.png">Originalgrafik öffnen</a></figcaption></figure>
+<p>Chronos-2 mit Bitcoin erreicht im Holdout 54,4&nbsp;% Balanced Accuracy. Sein nominelles 80-%-Intervall deckt nur noch 31,3&nbsp;% der tatsächlichen Gaps ab. In dieser Anwendung können wir es deshalb nicht als verlässliches Risikoband behandeln.</p>
+<h2 id="was-wir-aus-dem-projekt-mitnehmen"><span class="section-number" aria-hidden="true">08</span>Was wir aus dem Projekt mitnehmen</h2>
+<p><strong>Saubere Zeitgrenzen sind Teil des Modells.</strong> Unsere Merkmale mussten nicht nur plausibel aussehen, sondern zum Prognosezeitpunkt verfügbar sein. Zeitzonen, Sommerzeit, verkürzte Sitzungen und abgeschlossene Stundenkerzen entscheiden mit darüber, ob der Vergleich überhaupt sinnvoll ist.</p>
+<p><strong>Datenarbeit schlägt glamouröse Modellnamen.</strong> Schon beim Einlesen mussten wir unterschiedliche Bitcoin-Zeitstempel in Milli- und Mikrosekunden korrekt erkennen. Fehlende Stunden und unterschiedliche Fensterlängen verlangten klare Regeln. Diese Arbeit liefert selten die spektakulärste Folie, aber sie trägt das gesamte Experiment.</p>
+<p><strong>Eine einfache Baseline schützt vor Selbsttäuschung.</strong> «Immer positiv» erreicht im Holdout bereits 56,6&nbsp;% Accuracy. Deshalb braucht es den Vergleich mit der Kontrolle und die Balanced Accuracy. Ohne sie könnten wir einen höflichen Daueroptimisten für ein lernfähiges Prognosemodell halten.</p>
+<p><strong>Ein Foundation Model braucht einen Praxistest.</strong> Chronos-2 kann die zusätzlichen Merkmale verarbeiten, doch die trainierten Modelle passen in unserem Setup besser zur Richtungsaufgabe. Die Unsicherheitsintervalle zeigen ausserdem, dass Prognosegüte und verlässliche Unsicherheit zwei getrennte Prüfungen verlangen.</p>
+<p><strong>Auch falsche Entscheidungen haben eine Stärke.</strong> Im Notebook betrachten wir ergänzend den Abstand zur Entscheidungsgrenze. Eine knappe Fehlentscheidung ist anders als eine sehr deutliche. Die entsprechenden Scores haben bei Klassifikatoren und Chronos-2 allerdings unterschiedliche Einheiten; ihre Rohwerte dürfen wir nicht zu einer gemeinsamen Rangliste zusammenwerfen.</p>
+<p><strong>Ein guter Testzeitraum bleibt ein Testzeitraum.</strong> Acht Monate mit 166 Tagen und nur 32 Montagen sind begrenzt. Dass XGBoost im Holdout besser abschneidet als in der Validierung, erlaubt keine Zusage für die nächste Marktphase. Unsere festen Einstellungen wurden zudem nicht auf optimale Leistung abgestimmt.</p>
+<h2 id="was-das-ergebnis-bedeutet-und-was-offen-bleibt"><span class="section-number" aria-hidden="true">09</span>Was das Ergebnis bedeutet und was offen bleibt</h2>
+<p>Unsere Ausgangsfrage beantworten wir für den untersuchten Zeitraum positiv: <strong>Bitcoin-Overnight-Merkmale liefern in diesem Vergleich zusätzliche Information für die Richtung des QQQ-Eröffnungsgaps.</strong> XGBoost nutzt sie am erfolgreichsten; auch die logistische Regression gewinnt gegenüber ihrer Kontrolle.</p>
+<p>Eine profitable Handelsstrategie haben wir damit nicht nachgewiesen. Die Vorhersage um 09:00 Uhr und der Gap um 09:30 Uhr lassen sich nicht automatisch in einen erzielbaren Gewinn übersetzen. Dafür müsste eine gesonderte Untersuchung handelbare Instrumente, einen Einstieg vor der Eröffnung, Liquidität und Transaktionskosten berücksichtigen. Zudem unterscheidet die Richtungsmetrik nicht zwischen kleinen und grossen Gaps.</p>
+<p>Als nächste Forschungsfragen bieten sich ein längerer späterer Testzeitraum, weitere Marktphasen und der Vergleich mit anderen vorbörslichen Informationsquellen an. Eine mögliche Parameteroptimierung müsste in einer zusätzlichen zeitlichen Validierung innerhalb der Trainingsdaten stattfinden. Der bereits ausgewertete Holdout steht dafür nicht mehr als unangetasteter Test zur Verfügung.</p>
+<p>Bitcoin übernimmt in unserem Projekt also die Nachtschicht. Die entscheidende Arbeit leisten aber die sorgfältige Datenaufbereitung und ein Vergleich, der die Zukunft erst dann sieht, wenn sie tatsächlich Vergangenheit geworden ist. Die Yacht bleibt vorerst ein Rechenbeispiel.</p>
+<h2 id="notebook-und-quellen"><span class="section-number" aria-hidden="true">10</span>Notebook und Quellen</h2>
+<p>Die Berechnungen, Prüfungen und vollständigen Resultate stehen im <a href="material/btc_overnight_qqq_forecasting.ipynb">ausgeführten Projekt-Notebook</a>. Alle sechs Ergebnisgrafiken dieses Beitrags sind unveränderte PNG-Ausgaben dieses Notebooks. Die beiden schematischen Illustrationen stammen aus unseren Präsentationsfolien im Ordner <code>slides</code>; ihre Herkunft ist bei der jeweiligen Abbildung angegeben.</p>
+<p>Die Daten stammen aus <a href="https://data.binance.vision/">Binance Public Data</a>, <a href="https://ranaroussi.github.io/yfinance/">Yahoo Finance über yfinance</a> und der <a href="https://alternative.me/crypto/fear-and-greed-index/">Fear &amp; Greed API von Alternative.me</a>. Für die Börsensitzungen verwenden wir <a href="https://github.com/gerrymanoim/exchange_calendars">exchange_calendars</a>.</p>
+<p>Methodische Hintergründe liefern Hyndman und Athanasopoulos in <a href="https://otexts.com/fpp3/tscv.html">Forecasting Principles and Practice zur Zeitreihenvalidierung</a>, Chen und Guestrin im <a href="https://doi.org/10.1145/2939672.2939785">XGBoost-Paper</a> sowie Ansari und Mitautoren im <a href="https://arxiv.org/abs/2510.15821">Chronos-2 Technical Report</a>. Die Umsetzung von Chronos ist im <a href="https://github.com/amazon-science/chronos-forecasting">offiziellen Repository</a> dokumentiert.</p>
+<p><em>Datenstand: bis 31. August 2026. Ausbildungs- und Forschungsprojekt an der FHNW im Modul CSP1.</em></p>
+</article>
+    </main>
+    <footer class="footer"><p>Sandro Balz &amp; Stefan Binkert · CSP1 · FHNW</p><p><a href="material/btc_overnight_qqq_forecasting.ipynb" download>Ausgeführtes Notebook herunterladen</a></p></footer>
+  </div>
+</body>
+</html>

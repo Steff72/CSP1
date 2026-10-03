@@ -1,0 +1,92 @@
+{
+  "notebook": "notebooks/btc_overnight_qqq_forecasting.ipynb",
+  "notebook_sha256": "759a553aa5ce15178c77a21eab66ebc9f6e9723ede8458007eb4891dc2bf59a2",
+  "charts": [
+    {
+      "file": "assets/charts/btc-return-qqq-gap.png",
+      "cell_index": 26,
+      "output_index": 0,
+      "execution_count": 15,
+      "sha256": "d62ede9b957d71aa884fa14edd084767025f2a7752120a49b4261f02f8706054",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    },
+    {
+      "file": "assets/charts/btc-quintile.png",
+      "cell_index": 29,
+      "output_index": 1,
+      "execution_count": 17,
+      "sha256": "3a34abecb15bd177d2c71bf33ee0c9b525dd01fa08a74ce370b7b3dfd58501c5",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    },
+    {
+      "file": "assets/charts/modellvergleich-validierung.png",
+      "cell_index": 62,
+      "output_index": 0,
+      "execution_count": 40,
+      "sha256": "9292170eaa417947ddc145e945059461316444f1868ea33d8221f7580a33501f",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    },
+    {
+      "file": "assets/charts/xgboost-feature-importance.png",
+      "cell_index": 55,
+      "output_index": 0,
+      "execution_count": 35,
+      "sha256": "42592478d8c22147c228a49bc57ca94fd0af96b61449e8a12364dc2ccb1a8b7f",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    },
+    {
+      "file": "assets/charts/modellvergleich-holdout.png",
+      "cell_index": 73,
+      "output_index": 0,
+      "execution_count": 48,
+      "sha256": "0f2434c9bad611e8e7ad1ce43af11f705b5eb85064a8df2c73d3dfe521b96f03",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    },
+    {
+      "file": "assets/charts/xgboost-confusion-matrix.png",
+      "cell_index": 73,
+      "output_index": 2,
+      "execution_count": 48,
+      "sha256": "d6bb71e1ef32c8617d32613850608e43cd240c676ee2e3e35d89f14448103fe4",
+      "method": "Unveränderte PNG-Ausgabe aus dem ausgeführten Notebook"
+    }
+  ],
+  "illustrations": [
+    {
+      "file": "assets/illustrationen/btc-fruehindikator.png",
+      "source": "slides/Predicting_QQQ_Gaps_via_Bitcoin.pdf",
+      "page": 2,
+      "method": "Illustration aus der gerenderten PDF-Seite ausgeschnitten; keine inhaltliche Bearbeitung",
+      "crop_at_render_width_1400": [
+        60,
+        310,
+        640,
+        708
+      ]
+    },
+    {
+      "file": "assets/illustrationen/holdout-tresor.png",
+      "source": "slides/Predicting_QQQ_Gaps_via_Bitcoin.pdf",
+      "page": 12,
+      "method": "Illustration aus der gerenderten PDF-Seite ausgeschnitten; keine inhaltliche Bearbeitung",
+      "crop_at_render_width_1400": [
+        55,
+        175,
+        1355,
+        535
+      ]
+    }
+  ],
+  "metric_tables": [
+    {
+      "cell_index": 62,
+      "output_index": 1,
+      "scope": "Validierung 2021 bis 2025"
+    },
+    {
+      "cell_index": 72,
+      "output_index": 0,
+      "scope": "Holdout 2. Januar bis 31. August 2026"
+    }
+  ]
+}
