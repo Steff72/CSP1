@@ -171,7 +171,7 @@ Bitcoin übernimmt in unserem Projekt also die Nachtschicht. Die entscheidende A
 
 ## Notebook und Quellen
 
-Die Berechnungen, Prüfungen und vollständigen Resultate stehen im [ausgeführten Projekt-Notebook](material/btc_overnight_qqq_forecasting.ipynb). Alle sechs Ergebnisgrafiken dieses Beitrags sind unveränderte PNG-Ausgaben dieses Notebooks. Die beiden schematischen Illustrationen stammen aus unseren Präsentationsfolien im Ordner `slides`; ihre Herkunft ist bei der jeweiligen Abbildung angegeben.
+Die Berechnungen, Prüfungen und vollständigen Resultate stehen im ausgeführten Projekt-Notebook. Alle sechs Ergebnisgrafiken dieses Beitrags sind unveränderte PNG-Ausgaben dieses Notebooks. Die beiden schematischen Illustrationen stammen aus unseren Präsentationsfolien im Ordner `slides`; ihre Herkunft ist bei der jeweiligen Abbildung angegeben.
 
 Die Daten stammen aus [Binance Public Data](https://data.binance.vision/), [Yahoo Finance über yfinance](https://ranaroussi.github.io/yfinance/) und der [Fear & Greed API von Alternative.me](https://alternative.me/crypto/fear-and-greed-index/). Für die Börsensitzungen verwenden wir [exchange_calendars](https://github.com/gerrymanoim/exchange_calendars).
 

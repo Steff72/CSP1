@@ -1,6 +1,6 @@
 {
   "notebook": "notebooks/btc_overnight_qqq_forecasting.ipynb",
-  "notebook_sha256": "759a553aa5ce15178c77a21eab66ebc9f6e9723ede8458007eb4891dc2bf59a2",
+  "notebook_sha256": "bd62db010e1685faf4ff17d520179b02044c1028ebf70c72ce2b2b5d0d976dcd",
   "charts": [
     {
       "file": "assets/charts/btc-return-qqq-gap.png",

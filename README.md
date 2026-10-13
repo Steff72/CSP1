@@ -45,9 +45,6 @@ Umgesetzt sind:
 .
 ├── notebooks/
 │   └── btc_overnight_qqq_forecasting.ipynb
-├── output/
-│   └── pdf/
-│       └── btc_overnight_qqq_forecasting.pdf
 ├── notebooklm/
 │   ├── Predicting_QQQ_Gaps_via_Bitcoin.pdf
 │   └── Predicting_QQQ_Gaps_via_Bitcoin.pptx

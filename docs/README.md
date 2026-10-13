@@ -20,7 +20,7 @@ Die sechs Dateien in `assets/charts` wurden direkt aus den gespeicherten PNG-Aus
 
 Die beiden Illustrationen wurden aus den Seiten 2 und 12 von `slides/Predicting_QQQ_Gaps_via_Bitcoin.pdf` ausgeschnitten. Sie enthalten keine übernommenen Ergebnisdiagramme. Die Folien wurden mit NotebookLM erstellt; es werden hier ihre schematischen Illustrationen verwendet.
 
-`material/btc_overnight_qqq_forecasting.ipynb` ist eine unveränderte Kopie des ausgeführten Projekt-Notebooks zum Stand dieses Beitrags. Dadurch funktioniert dessen Download auch bei einer Veröffentlichung nur des `/docs`-Ordners. Bei einer späteren Aktualisierung müssen Artikel, Charts, Quellenverzeichnis und Notebookkopie zusammen aktualisiert werden.
+Das ausgeführte Projekt-Notebook liegt unter `notebooks/btc_overnight_qqq_forecasting.ipynb` im Repository. Bei einer späteren Aktualisierung müssen Artikel, Charts und Quellenverzeichnis zusammen aktualisiert werden.
 
 Die Webseite wird aus `BLOG.md` mit `render-blog.mjs` erzeugt. Der Generator verwendet das im Codex-Arbeitsruntime vorhandene Paket `marked`. Für eine Ausführung ausserhalb dieser Umgebung kann dessen Modulpfad als Argument übergeben werden:
 

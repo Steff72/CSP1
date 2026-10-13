@@ -80,7 +80,7 @@ const document = `<!doctype html>
       </section>
       <article class="article" id="beitrag" aria-label="Projektblog">${html}</article>
     </main>
-    <footer class="footer"><p>Sandro Balz &amp; Stefan Binkert · CSP1 · FHNW</p><p><a href="material/btc_overnight_qqq_forecasting.ipynb" download>Ausgeführtes Notebook herunterladen</a></p></footer>
+    <footer class="footer"><p>Sandro Balz &amp; Stefan Binkert · CSP1 · FHNW</p></footer>
   </div>
 </body>
 </html>
